@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT Course - Reports Index</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 30px;
+        }
+        .report-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .report-list {
+            list-style: none;
+            padding: 0;
+        }
+        .report-list li {
+            margin: 10px 0;
+            padding: 15px;
+            background: #ecf0f1;
+            border-left: 4px solid #3498db;
+            transition: background 0.3s;
+        }
+        .report-list li:hover {
+            background: #d5dbdd;
+        }
+        .report-list a {
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 500;
+            display: block;
+        }
+        .report-list a:hover {
+            color: #3498db;
+        }
+        .description {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .stats {
+            background: #3498db;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .stats strong {
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <h1>📚 IoT Course - Lab Reports & Projects</h1>
+    
+    <div class="stats">
+        <strong>Total Completed:</strong> 5 Labs + 2 Projects = 7 Reports
+    </div>
+
+    <div class="report-section">
+        <h2>🔬 Laboratory Work (Labs 1-5)</h2>
+        <ul class="report-list">
+            <li>
+                <a href="Lab1-Report.html">Lab 1: Basic Lua Handling</a>
+                <div class="description">Lua script for reading JSON and modifying MAC addresses</div>
+            </li>
+            <li>
+                <a href="Lab2-Report.html">Lab 2: Lua Regex and Data Parsing</a>
+                <div class="description">JSON parsing with protocol checking and firmware version regex matching</div>
+            </li>
+            <li>
+                <a href="Lab3-Report.html">Lab 3: NATS Protocol Testing</a>
+                <div class="description">NATS server setup with Python publisher/subscriber messaging</div>
+            </li>
+            <li>
+                <a href="Lab4-Report.html">Lab 4: Django Testing</a>
+                <div class="description">Basic Django web server with Channels support</div>
+            </li>
+            <li>
+                <a href="Lab5-Report.html">Lab 5: MQTT and Home Assistant Integration</a>
+                <div class="description">MQTT communication using paho-mqtt with Mosquitto broker</div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="report-section">
+        <h2>🚀 Projects</h2>
+        <ul class="report-list">
+            <li>
+                <a href="Project1-Django-MQTT.html">Project 1: Django and MQTT Integration</a>
+                <div class="description">
+                    <strong>Tasks:</strong> Django web server, WebSocket echo server, MQTT listener, API-to-MQTT pipeline
+                    <br><strong>Technologies:</strong> Django, Channels, WebSockets, MQTT, wttr.in API
+                </div>
+            </li>
+            <li>
+                <a href="Project2-HA-Mock-Device.html">Project 2: Home Assistant Mock Device</a>
+                <div class="description">
+                    <strong>Features:</strong> Mock IoT weather station with MQTT Discovery protocol
+                    <br><strong>Sensors:</strong> Temperature, Humidity, Pressure (simulated)
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="report-section">
+        <h2>📄 Printing to PDF</h2>
+        <p>To convert any report to PDF:</p>
+        <ol>
+            <li>Open the report in your browser (click the link above)</li>
+            <li>Press <kbd>Ctrl+P</kbd> (or <kbd>Cmd+P</kbd> on Mac)</li>
+            <li>Select "Save as PDF" or "Microsoft Print to PDF"</li>
+            <li>Enable "Print backgrounds" for better formatting</li>
+            <li>Click Save</li>
+        </ol>
+    </div>
+
+    <div class="report-section">
+        <h2>📋 Technologies Summary</h2>
+        <ul>
+            <li><strong>Languages:</strong> Python, Lua, JavaScript</li>
+            <li><strong>Frameworks:</strong> Django, Django Channels</li>
+            <li><strong>Protocols:</strong> MQTT, NATS, WebSocket, HTTP</li>
+            <li><strong>Tools:</strong> Docker, Mosquitto, NATS Server, Home Assistant</li>
+            <li><strong>Libraries:</strong> paho-mqtt, nats-py, channels, daphne, requests, lua-cjson</li>
+        </ul>
+    </div>
+
+    <footer style="text-align: center; margin-top: 40px; color: #7f8c8d;">
+        <p>IoT Course - Semester 7 | December 2025</p>
+    </footer>
+</body>
+</html>

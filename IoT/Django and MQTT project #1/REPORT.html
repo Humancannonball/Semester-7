@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Project 1: Django and MQTT</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Project 1: Django and MQTT</h1>
+</header>
+<h1 id="project-1-django-and-mqtt---report">Project 1: Django and MQTT -
+Report</h1>
+<h2 id="project-overview">Project Overview</h2>
+<p>This project demonstrates the Django web framework with WebSocket
+support and MQTT integration. It consists of two main tasks: -
+<strong>Task 1</strong>: Django server with basic HTTP, WebSocket, and
+MQTT listener capabilities - <strong>Task 2</strong>: Python application
+that fetches data from an API, saves it to JSON, and publishes to
+MQTT</p>
+<hr />
+<h2 id="task-1-django-framework-implementation">Task 1: Django Framework
+Implementation</h2>
+<h3 id="task-1.1-basic-django-web-server">Task 1.1: Basic Django Web
+Server</h3>
+<p><strong>Implementation:</strong> - Created Django project
+<code>django_mqtt</code> with app <code>myapp</code> - Configured basic
+HTTP view returning server status</p>
+<p><strong>Code (myapp/views.py):</strong></p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> django.http <span class="im">import</span> HttpResponse</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> index(request):</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> HttpResponse(<span class="st">&quot;&lt;h1&gt;Django MQTT Server&lt;/h1&gt;&lt;p&gt;Server is running!&lt;/p&gt;&quot;</span>)</span></code></pre></div>
+<p><strong>Running:</strong></p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> manage.py runserver 127.0.0.1:8000</span></code></pre></div>
+<p><strong>Result:</strong></p>
+<figure>
+<img src="1.png" alt="Basic Django Server" />
+<figcaption aria-hidden="true">Basic Django Server</figcaption>
+</figure>
+<p>The server successfully starts and returns the HTML response when
+accessed via browser.</p>
+<hr />
+<h3 id="task-1.2-django-websocket-server">Task 1.2: Django WebSocket
+Server</h3>
+<p><strong>Implementation:</strong> - Added Django Channels and Daphne
+for ASGI/WebSocket support - Created WebSocket consumer that echoes
+messages back to client - Built HTML page with JavaScript WebSocket
+client</p>
+<p><strong>Code (myapp/consumers.py):</strong></p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> channels.generic.websocket <span class="im">import</span> WebsocketConsumer</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> EchoConsumer(WebsocketConsumer):</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="ex">connect</span>(<span class="va">self</span>):</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.accept()</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.send(text_data<span class="op">=</span>json.dumps({<span class="st">&#39;message&#39;</span>: <span class="st">&#39;Connected to WebSocket!&#39;</span>}))</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> receive(<span class="va">self</span>, text_data):</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        data <span class="op">=</span> json.loads(text_data)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        message <span class="op">=</span> data.get(<span class="st">&#39;message&#39;</span>, <span class="st">&#39;&#39;</span>)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.send(text_data<span class="op">=</span>json.dumps({<span class="st">&#39;message&#39;</span>: <span class="ss">f&#39;Echo: </span><span class="sc">{</span>message<span class="sc">}</span><span class="ss">&#39;</span>}))</span></code></pre></div>
+<p><strong>ASGI Configuration (django_mqtt/asgi.py):</strong></p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> channels.routing <span class="im">import</span> ProtocolTypeRouter, URLRouter</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> channels.auth <span class="im">import</span> AuthMiddlewareStack</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> myapp.routing <span class="im">import</span> websocket_urlpatterns</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>application <span class="op">=</span> ProtocolTypeRouter({</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;http&quot;</span>: django_asgi_app,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;websocket&quot;</span>: AuthMiddlewareStack(URLRouter(websocket_urlpatterns)),</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<p><strong>Running:</strong></p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">daphne</span> <span class="at">-b</span> 127.0.0.1 <span class="at">-p</span> 8000 django_mqtt.asgi:application</span></code></pre></div>
+<p><strong>Result:</strong></p>
+<figure>
+<img src="2.png" alt="WebSocket Test" />
+<figcaption aria-hidden="true">WebSocket Test</figcaption>
+</figure>
+<p>The WebSocket connection establishes successfully, and messages are
+echoed back from the server in real-time.</p>
+<hr />
+<h3 id="task-1.3-django-mqtt-listener">Task 1.3: Django MQTT
+Listener</h3>
+<p><strong>Implementation:</strong> - Created Django management command
+<code>mqtt_listener</code> - Uses paho-mqtt library to subscribe to all
+MQTT topics - Prints received messages to console</p>
+<p><strong>Code (management/commands/mqtt_listener.py):</strong></p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> django.core.management.base <span class="im">import</span> BaseCommand</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> paho.mqtt.client <span class="im">as</span> mqtt</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Command(BaseCommand):</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> handle(<span class="va">self</span>, <span class="op">*</span>args, <span class="op">**</span>options):</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>        <span class="kw">def</span> on_connect(client, userdata, flags, rc, properties<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.stdout.write(<span class="va">self</span>.style.SUCCESS(<span class="ss">f&#39;Connected to MQTT broker&#39;</span>))</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>            client.subscribe(<span class="st">&#39;#&#39;</span>)  <span class="co"># Subscribe to all topics</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="kw">def</span> on_message(client, userdata, msg):</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.stdout.write(<span class="ss">f&#39;[</span><span class="sc">{</span>msg<span class="sc">.</span>topic<span class="sc">}</span><span class="ss">] </span><span class="sc">{</span>msg<span class="sc">.</span>payload<span class="sc">.</span>decode()<span class="sc">}</span><span class="ss">&#39;</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>        client <span class="op">=</span> mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>        client.on_connect <span class="op">=</span> on_connect</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>        client.on_message <span class="op">=</span> on_message</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>        client.<span class="ex">connect</span>(<span class="st">&#39;localhost&#39;</span>, <span class="dv">1883</span>, <span class="dv">60</span>)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>        client.loop_forever()</span></code></pre></div>
+<p><strong>Running:</strong></p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Terminal 1</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> manage.py mqtt_listener</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Terminal 2 - send test messages</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> exec mosquitto mosquitto_pub <span class="at">-t</span> <span class="st">&quot;test/topic&quot;</span> <span class="at">-m</span> <span class="st">&quot;Hello from MQTTx!&quot;</span></span></code></pre></div>
+<p><strong>Result:</strong></p>
+<figure>
+<img src="3.png" alt="MQTT Listener" />
+<figcaption aria-hidden="true">MQTT Listener</figcaption>
+</figure>
+<p>The listener successfully connects to the MQTT broker, subscribes to
+all topics, and displays received messages with their topic names.</p>
+<hr />
+<h2 id="task-2-api-to-mqtt-integration">Task 2: API to MQTT
+Integration</h2>
+<p><strong>Implementation:</strong> - Python script that fetches weather
+data from wttr.in API - Saves complete response to
+<code>output.json</code> - Extracts key weather metrics and publishes to
+MQTT</p>
+<p><strong>Code (api_fetch.py):</strong></p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> paho.mqtt.client <span class="im">as</span> mqtt</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>CITY <span class="op">=</span> <span class="st">&quot;Vilnius&quot;</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>API_URL <span class="op">=</span> <span class="ss">f&quot;https://wttr.in/</span><span class="sc">{</span>CITY<span class="sc">}</span><span class="ss">?format=j1&quot;</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>MQTT_TOPIC <span class="op">=</span> <span class="st">&quot;weather/data&quot;</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fetch_weather():</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    response <span class="op">=</span> requests.get(API_URL, timeout<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> response.json()</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> save_to_file(data, filename<span class="op">=</span><span class="st">&quot;output.json&quot;</span>):</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(filename, <span class="st">&#39;w&#39;</span>) <span class="im">as</span> f:</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>        json.dump(data, f, indent<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> publish_to_mqtt(data):</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    client <span class="op">=</span> mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    client.<span class="ex">connect</span>(<span class="st">&quot;localhost&quot;</span>, <span class="dv">1883</span>, <span class="dv">60</span>)</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    current <span class="op">=</span> data.get(<span class="st">&#39;current_condition&#39;</span>, [{}])[<span class="dv">0</span>]</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    weather_info <span class="op">=</span> {</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>        <span class="st">&#39;city&#39;</span>: CITY,</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>        <span class="st">&#39;temperature_c&#39;</span>: current.get(<span class="st">&#39;temp_C&#39;</span>),</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>        <span class="st">&#39;humidity&#39;</span>: current.get(<span class="st">&#39;humidity&#39;</span>),</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>        <span class="st">&#39;pressure&#39;</span>: current.get(<span class="st">&#39;pressure&#39;</span>),</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>        <span class="st">&#39;weather_desc&#39;</span>: current.get(<span class="st">&#39;weatherDesc&#39;</span>, [{}])[<span class="dv">0</span>].get(<span class="st">&#39;value&#39;</span>),</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    client.publish(MQTT_TOPIC, json.dumps(weather_info))</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>    client.disconnect()</span></code></pre></div>
+<p><strong>Running:</strong></p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> api_fetch.py</span></code></pre></div>
+<p><strong>Result:</strong></p>
+<figure>
+<img src="4.png" alt="API to MQTT" />
+<figcaption aria-hidden="true">API to MQTT</figcaption>
+</figure>
+<p>The script successfully: 1. Fetches weather data from wttr.in API for
+Vilnius 2. Saves complete JSON response to <code>output.json</code> file
+3. Publishes extracted weather metrics to MQTT topic
+<code>weather/data</code></p>
+<hr />
+<h2 id="technologies-used">Technologies Used</h2>
+<ul>
+<li><strong>Django 6.0</strong> - Web framework</li>
+<li><strong>Django Channels 3.0.4</strong> - WebSocket support</li>
+<li><strong>Daphne</strong> - ASGI server</li>
+<li><strong>paho-mqtt</strong> - MQTT client library</li>
+<li><strong>Eclipse Mosquitto</strong> - MQTT broker (Docker)</li>
+<li><strong>wttr.in API</strong> - Weather data source</li>
+</ul>
+<hr />
+<h2 id="conclusion">Conclusion</h2>
+<p>This project successfully demonstrates: 1. <strong>Django
+basics</strong> - HTTP request handling and routing 2. <strong>Real-time
+communication</strong> - WebSocket implementation with bidirectional
+messaging 3. <strong>IoT integration</strong> - MQTT protocol for
+publish/subscribe messaging 4. <strong>API integration</strong> -
+External data fetching and transformation 5. <strong>Data
+persistence</strong> - JSON file storage</p>
+<p>The combination of Django’s web framework with MQTT messaging creates
+a foundation for building IoT dashboard applications that can receive
+sensor data, display it via web interface, and enable real-time updates
+through WebSockets.</p>
+<h3 id="key-learning-points">Key Learning Points</h3>
+<ul>
+<li>Django Channels extends Django to handle WebSocket connections</li>
+<li>ASGI (Asynchronous Server Gateway Interface) replaces WSGI for async
+capabilities</li>
+<li>MQTT’s pub/sub pattern is ideal for IoT device communication</li>
+<li>Integration between different protocols (HTTP, WebSocket, MQTT) in
+one application</li>
+</ul>
+</body>
+</html>

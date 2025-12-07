@@ -1,0 +1,37 @@
+{
+    "radios": {
+        "wlan0": {
+            "mac": "C4:93:00:32:DF:9D",
+            "name": "wlan0",
+            "phy": "phy0",
+            "protocol": "11ad",
+            "antennas": 0,
+            "txPower": 0,
+            "channel": 6,
+            "frequency": 69120,
+            "channelWidth": 2160,
+            "noise": 0,
+            "countryCode": "00",
+            "vendor": "prs",
+            "T_radio": 6000,
+            "T_mac": 25000
+        }
+    },
+    "vaps": [
+        {
+            "ifIndex": 14,
+            "name": "wlan0",
+            "mac": "C4:93:00:32:DF:9D",
+            "radio": "wlan0",
+            "operationMode": "master",
+            "ssid": "179",
+            "hiddenSsid": false,
+            "peerCount": 1,
+            "security": "WPA2-PSK (AES)",
+            "maxPeerCount": 32,
+            "rxmcs": 4,
+            "rxPackets": 13145561497,
+            "rxErrors": 0
+        }
+    ]
+}

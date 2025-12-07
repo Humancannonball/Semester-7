@@ -17,7 +17,7 @@ local function increment_mac(mac)
 end
 
 local function main()
-    local content, err = read_file("Lab1/data.json")
+    local content, err = read_file("data.json")
     if not content then
         print("Error reading file: " .. err)
         return
